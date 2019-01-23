@@ -1,6 +1,6 @@
 # Traffic Sign Detection with TensorFlow Object Detection API
 
-Instructions for training and evaluating networks from [TensorFlow object detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) for sign detection using the TT100K dataset.
+Instructions for training and evaluating networks from [TensorFlow object detection model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md) for sign detection using the TT100K dataset. Tested on Ubuntu 16.04.5 LTS with Python 3.6, TensorFlow 
 
 ## AWS setup
 If you are using AWS, follow the instructions [here](https://github.gatech.edu/schou33/aws_instructions#create-deep-learning-ami-for-gpu-supported-instance) to set up an EC2 instance. Copy the TT100K dataset from S3 using 
