@@ -14,7 +14,7 @@
 # ==============================================================================
 
 """
-Convert the Tsinghua-Tencent 100K (TT100K) dataset to TFRecord for traffic sign detection. Only red signs are detected.
+Convert the Tsinghua-Tencent 100K (TT100K) dataset to TFRecord for traffic sign detection.
 
 Author: Niranjan Thakurdesai
 
@@ -31,8 +31,6 @@ import io
 
 import PIL.Image
 import tensorflow as tf
-import contextlib2
-from object_detection.dataset_tools import tf_record_creation_util
 from object_detection.utils import label_map_util, dataset_util
 
 
@@ -120,35 +118,41 @@ def create_tf_record(output_filename, label_map_dict, annos, image_dir, examples
     """
     writer = tf.python_io.TFRecordWriter(output_filename)
 
-    # List of red sign classes. For each example, we save a category only if it is a red sign. (dict taken from Nicolas)
-    red_sign_classes = ['p1', 'p10', 'p11', 'p12', 'p13', 'p14', 'p15', 'p16', 'p17', 'p18', 'p19', 'p2', 'p20', 'p21',
-                        'p22', 'p23', 'p24', 'p25', 'p26', 'p27', 'p28', 'p29', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9',
-                         'pa10', 'pa12', 'pa13', 'pa14', 'pa8', 'pax', 'pb', 'pc', 'ph1.5', 'ph2', 'ph2.1', 'ph2.2',
-                         'ph2.4', 'ph2.5', 'ph2.6', 'ph2.8', 'ph2.9', 'ph3', 'ph3.2', 'ph3.3', 'ph3.5', 'ph3.8', 'ph4',
-                         'ph4.2', 'ph4.3', 'ph4.4', 'ph4.5', 'ph4.8', 'ph5', 'ph5.3', 'ph5.5', 'phx', 'pl0', 'pl10',
-                         'pl100', 'pl110', 'pl120', 'pl15', 'pl20', 'pl25', 'pl3', 'pl30', 'pl35', 'pl4', 'pl40', 'pl5',
-                         'pl50', 'pl60', 'pl65', 'pl70', 'pl80', 'pl90', 'plx', 'pm1.5', 'pm10', 'pm13', 'pm15', 'pm2',
-                         'pm2.5', 'pm20', 'pm25', 'pm30', 'pm35', 'pm40', 'pm46', 'pm5', 'pm50', 'pm55', 'pm8', 'pn40',
-                         'pr10', 'pr100', 'pr20', 'pr30', 'pr40', 'pr45', 'pr50', 'pr60', 'pr70', 'pr80', 'prx', 'pw2',
-                         'pw2.5', 'pw3', 'pw3.2', 'pw3.5', 'pw4', 'pw4.2', 'pw4.5', 'pwx', 'po']
-
     # Iterate through examples
     for idx, example in enumerate(examples):
         if idx % 500 == 0:
             logging.info('On image %d of %d', idx, len(examples))
 
         id = os.path.splitext(example)[0]   # dict id is the image filename without extension
-        objects = annos[id]['objects']
+        objects = annos['imgs'][id]['objects']
 
         data = {
             'filename': example,
             'object': []
         }
 
+        # List of red sign classes. For each example, we save a category only if it is a red sign. (dict taken from
+        # Nicolas)
+        red_sign_classes = ['p1', 'p10', 'p11', 'p12', 'p13', 'p14', 'p15', 'p16', 'p17', 'p18', 'p19', 'p2', 'p20',
+                            'p21',
+                            'p22', 'p23', 'p24', 'p25', 'p26', 'p27', 'p28', 'p29', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8',
+                            'p9', 'pa10', 'pa12', 'pa13', 'pa14', 'pa8', 'pax', 'pb', 'pc', 'ph1.5', 'ph2', 'ph2.1',
+                            'ph2.2', 'ph2.4', 'ph2.5', 'ph2.6', 'ph2.8', 'ph2.9', 'ph3', 'ph3.2', 'ph3.3', 'ph3.5',
+                            'ph3.8',
+                            'ph4', 'ph4.2', 'ph4.3', 'ph4.4', 'ph4.5', 'ph4.8', 'ph5', 'ph5.3', 'ph5.5', 'phx', 'pl0',
+                            'pl10', 'pl100', 'pl110', 'pl120', 'pl15', 'pl20', 'pl25', 'pl3', 'pl30', 'pl35', 'pl4',
+                            'pl40',
+                            'pl5', 'pl50', 'pl60', 'pl65', 'pl70', 'pl80', 'pl90', 'plx', 'pm1.5', 'pm10', 'pm13',
+                            'pm15',
+                            'pm2', 'pm2.5', 'pm20', 'pm25', 'pm30', 'pm35', 'pm40', 'pm46', 'pm5', 'pm50', 'pm55',
+                            'pm8',
+                            'pn40', 'pr10', 'pr100', 'pr20', 'pr30', 'pr40', 'pr45', 'pr50', 'pr60', 'pr70', 'pr80',
+                            'prx',
+                            'pw2', 'pw2.5', 'pw3', 'pw3.2', 'pw3.5', 'pw4', 'pw4.2', 'pw4.5', 'pwx', 'po']
+
         # Iterate through all objects (i.e. signs)
         for obj in objects:
             class_name = obj['category']
-            # Check if the object is a red sign
             if class_name in red_sign_classes:
                 class_id = label_map_dict[class_name]
                 bbox = obj['bbox']
@@ -183,6 +187,8 @@ def read_image_filenames(image_dir, filenames):
 
 
 def main(_):
+    logging.basicConfig(level=logging.INFO)  # print logs
+
     data_dir = FLAGS.data_dir
     label_map_dict = label_map_util.get_label_map_dict(FLAGS.label_map_path)
 
@@ -208,7 +214,10 @@ def main(_):
     val_output_path = os.path.join(FLAGS.output_dir, 'tt100k_red_signs_val.record')
 
     # Create TF record files for training and test data separately
+    logging.info('Reading training images')
     create_tf_record(train_output_path, label_map_dict, annos, image_dir_train, train_examples)
+
+    logging.info('Reading test images')
     create_tf_record(val_output_path, label_map_dict, annos, image_dir_test, test_examples)
 
 

@@ -1,5 +1,6 @@
 """
-Generate .pbtxt label map of the Tsinghua-Tencent 100K (TT100K) dataset for use with the TensorFlow object detection API
+Generate .pbtxt label map of the Tsinghua-Tencent 100K (TT100K) dataset for use with the TensorFlow object detection
+API. Adds all signs in the dataset.
 
 Author: Niranjan Thakurdesai
 """
