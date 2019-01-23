@@ -19,7 +19,8 @@ Convert the Tsinghua-Tencent 100K (TT100K) dataset to TFRecord for traffic sign 
 Author: Niranjan Thakurdesai
 
 Example usage:
-    ./
+    python create_tt100k_tf_record.py --data_dir=<path-to-TT100K-dataset-root-directory> --output_dir=<path-to-tfrecord-
+    output-directory> --label_map_path=<path-to-label-map-pbtxt>
 """
 
 import json
@@ -31,14 +32,14 @@ import io
 import PIL.Image
 import tensorflow as tf
 import contextlib2
-from google3.third_party.tensorflow_models.object_detection.dataset_tools import tf_record_creation_util
+from object_detection.dataset_tools import tf_record_creation_util
 from object_detection.utils import label_map_util, dataset_util
 
 
 # Command-line arguments
 flags = tf.app.flags
 flags.DEFINE_string('data_dir', '', 'Root directory to the dataset')
-flags.DEFINE_string('output_dir', '', 'Path to directory to output TFRecords')
+flags.DEFINE_string('output_dir', '', 'Path to directory where output TFRecords should be saved')
 flags.DEFINE_string('label_map_path', '', 'Path to label map proto')
 FLAGS = flags.FLAGS
 

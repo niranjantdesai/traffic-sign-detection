@@ -36,3 +36,8 @@ python code/generate_label_map.py -d <path-to-TT100K-dataset-root-directory> -o 
 ```
 
 ## Create TF record files
+Create training and test .record files by running
+```buildoutcfg
+python create_tt100k_tf_record.py --data_dir=<path-to-TT100K-dataset-root-directory> --output_dir=<path-to-tfrecord-output-directory> --label_map_path=<path-to-label-map-pbtxt>
+```
+Here, ```output_dir``` is the path to the directory where you want to store the .record files which the Python script will generate.
