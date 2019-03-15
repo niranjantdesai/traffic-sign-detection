@@ -69,3 +69,8 @@ Here, ```output_dir``` is the path to the directory where you want to store the 
     tensorboard --logdir=<path-to-output-directory>
     ```
     where the output directory is the same as used in the first step.
+3. If training stops for some reason or the loss is high and you want to train further, use the latest checkpoint in the config file and insert the following line after ```fine_tune_checkpoint```:
+    ```
+    load_all_detection_checkpoint_vars: true
+    ```
+    This will reload the box predictor's weights along with those of the feature extractor.
